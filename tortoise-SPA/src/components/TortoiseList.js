@@ -10,7 +10,12 @@ class TortoiseList extends Component {
       tortoises: []
     }
   }
-
+  deleteTortoise(id){
+    axios.delete('http://localhost:8000/api/tortoises/'+id).then(response => {
+        alert("Tortoise has been removed")
+        window.location.reload();
+    })
+  }
   componentDidMount () {
     axios.get('http://localhost:8000/api/tortoises').then(response => {
         this.setState({
@@ -41,6 +46,7 @@ class TortoiseList extends Component {
                       <th>Min(g)</th>
                       <th>Avg(g)</th>
                       <th>Max(g)</th>
+                      <th>Delete</th>
                     </tr>
                     </thead>
                     <tbody style={{display: "table-row-group", "verticalAlign": "middle"}}>
@@ -54,6 +60,7 @@ class TortoiseList extends Component {
                         <td>{tortoise.min}</td>
                         <td>{tortoise.avg}</td>
                         <td>{tortoise.max}</td>
+                        <td><button className='btn btn-danger' onClick={()=>this.deleteTortoise(tortoise.id)}>Delete</button></td>
                       </tr>)
                       }
                     </tbody>

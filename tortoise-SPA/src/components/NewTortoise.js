@@ -99,19 +99,20 @@ var bigdecimal = require("bigdecimal");
           max: tortoiseData.max
         }
         console.log(tortoise)
-        if (window.confirm(tortoise.result))
-            {
-              window.location.href = "/show";
-            }
         axios.post('http://localhost:8000/api/tortoises', tortoise)
           .then(response => {
            console.log(response)
+           if (window.confirm(tortoise.result))
+            {
+              window.location.href = "/show";
+            }
           })
           .catch(error => {
             this.setState({
               errors: error.response.data.errors
             })
           })
+        
       }
 
       hasErrorFor (field) {
