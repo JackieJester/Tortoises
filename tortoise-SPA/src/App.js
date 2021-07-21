@@ -4,6 +4,7 @@
     import Header from './components/Header'
     import TortoiseList from './components/TortoiseList'
     import NewTortoise from './components/NewTortoise'
+    import Welcome from './components/Welcome'
 
     function App() {
         return (
@@ -11,6 +12,7 @@
             <div>
               <Header />
               <Switch>  
+              <Route exact path='/' component={Welcome} />
                 <Route exact path='/show' component={TortoiseList} />
                 <Route exact path='/create' component={NewTortoise} />
               </Switch>
