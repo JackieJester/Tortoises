@@ -9,12 +9,26 @@ var bigdecimal = require("bigdecimal");
         this.state = {
           length: '',
           weight: '',
+          result:'',
+          containerIsShown: false,
           errors: []
         }
+        this.makeContainerAppear = this.makeContainerAppear.bind(this);
         this.handleFieldChange = this.handleFieldChange.bind(this)
         this.handleCreateNewTortoise = this.handleCreateNewTortoise.bind(this)
         this.hasErrorFor = this.hasErrorFor.bind(this)
         this.renderErrorFor = this.renderErrorFor.bind(this)
+      }
+
+      showComponent(isHidden){        
+          this.setState({
+            containerIsShown: isHidden
+          })  
+      }
+
+      makeContainerAppear(){
+        this.showComponent(true)
+        setTimeout(() => this.showComponent(false),3000)
       }
 
        factors = {
@@ -49,7 +63,6 @@ var bigdecimal = require("bigdecimal");
         let min = this.factorize(l, this.factors.min.mult, this.factors.min.exp)
         let max = this.factorize(l, this.factors.max.mult, this.factors.max.exp)
         let avg = this.factorize(l, this.factors.avg.mult, this.factors.avg.exp)
-        // console.log('called compute factors', {l, min, max, avg});
     
         return { min, max, avg };
     }
@@ -89,7 +102,6 @@ var bigdecimal = require("bigdecimal");
         event.preventDefault()
 
         var tortoiseData = this.testos(this.state.length, this.state.weight)
-        console.log(tortoiseData)
         const tortoise = {
           length: this.state.length,
           weight: this.state.weight,
@@ -98,21 +110,11 @@ var bigdecimal = require("bigdecimal");
           avg: tortoiseData.avg,
           max: tortoiseData.max
         }
-        console.log(tortoise)
+        this.setState({
+          result: tortoiseData.result
+        })
         axios.post('http://localhost:8000/api/tortoises', tortoise)
-          .then(response => {
-           console.log(response)
-           if (window.confirm(tortoise.result))
-            {
-              window.location.href = "/show";
-            }
-          })
-          .catch(error => {
-            this.setState({
-              errors: error.response.data.errors
-            })
-          })
-        
+          .then(response => {})
       }
 
       hasErrorFor (field) {
@@ -162,7 +164,11 @@ var bigdecimal = require("bigdecimal");
                         />
                         {this.renderErrorFor('weight')}
                       </div>
-                      <button className='btn btn-primary'>Add</button>
+                      <button className='btn btn-primary' onClick={() => this.makeContainerAppear()}>Add</button>
+                      {this.state.containerIsShown &&(
+                      <div class="container p-3 my-3 bg-danger border align-middle">
+                        <h1 style={{textAlign: "center"}}>{this.state.result}</h1>
+                    </div>)}
                     </form>
                   </div>
                 </div>

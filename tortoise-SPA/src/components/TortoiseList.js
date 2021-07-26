@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import '../bootstrap.css';
 
+
 class TortoiseList extends Component {
   constructor () {
     super()
@@ -16,10 +17,23 @@ class TortoiseList extends Component {
         window.location.reload();
     })
   }
+
+  convertStringToDate(date){
+    let newDate = new Date(date)
+    return newDate.toDateString()
+      
+  }
+
   componentDidMount () {
     axios.get('http://localhost:8000/api/tortoises').then(response => {
+        let processedTortoises = []
+        response.data.forEach(testoasa => {
+          let newTestoasa = testoasa
+          newTestoasa.created_at = this.convertStringToDate(testoasa.created_at)
+          processedTortoises.push(newTestoasa)
+      });
         this.setState({
-        tortoises: response.data
+        tortoises: processedTortoises  
       })
     })
   }
@@ -46,6 +60,7 @@ class TortoiseList extends Component {
                       <th>Min(g)</th>
                       <th>Avg(g)</th>
                       <th>Max(g)</th>
+                      <th>Created at</th>
                       <th>Delete</th>
                     </tr>
                     </thead>
@@ -59,7 +74,8 @@ class TortoiseList extends Component {
                         <td>{tortoise.result}</td>
                         <td>{tortoise.min}</td>
                         <td>{tortoise.avg}</td>
-                        <td>{tortoise.max}</td>
+                        <td>{tortoise.max}</td> 
+                        <td>{tortoise.created_at}</td>
                         <td><button className='btn btn-danger' onClick={()=>this.deleteTortoise(tortoise.id)}>Delete</button></td>
                       </tr>)
                       }
